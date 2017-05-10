@@ -6,7 +6,16 @@ using System.Threading.Tasks;
 using System.Net;
 
 namespace Task2
-{
+{   
+    public interface IItem
+    {
+        /// <summary>
+        /// Gets a textual description of this item.
+        /// </summary>
+        string Description { get; }
+
+        string GetCountry(decimal number);
+    }
     public class customer
     {
         static void Main(string[] args)
@@ -22,7 +31,7 @@ namespace Task2
 
             foreach (var b in customer)
             {
-                Console.WriteLine("Auflistung der Kunden: {0} {1} {2} {3}", b.Name, b.Number,b.GetCountry(b.Number), b.countryid2);
+                Console.WriteLine("Auflistung der Kunden: {0} {1} {2} {3} {4}", b.Name, b.Number,b.GetCountry(b.Number), b.countryid2, b.Description);
             }
 
         }
@@ -57,6 +66,9 @@ namespace Task2
             /// </summary>
             public string Name { get; }
 
+            #region IItem 
+
+            public string Description => Name;
             /// <summary>
             /// Gets the country to the number
             /// </summary>
@@ -77,6 +89,7 @@ namespace Task2
                 country = parts[6];
                 return country;
             }
+            #endregion 
 
             /// <summary>
             /// Updates the countrid
