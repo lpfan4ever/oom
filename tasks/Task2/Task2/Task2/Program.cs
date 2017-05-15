@@ -28,11 +28,12 @@ namespace Task2
                 new customer("Firma 4", 2585, 0),
                 new customer("Firma 5", 1901, 0),
             };
-
+            var amount = new Storage("Firma 6", 50, 1257, 100);
             foreach (var b in customer)
             {
-                Console.WriteLine("Auflistung der Kunden: {0} {1} {2} {3} {4}", b.Name, b.Number,b.GetCountry(b.Number), b.countryid2, b.Description);
+                Console.WriteLine("Auflistung der Kunden: {0}, {1}, {2}, {3}, {4}", b.Name, b.Number,b.GetCountry(b.Number), b.countryid2, b.Description);
             }
+            Console.WriteLine("Lager: {0}, {1}, {2}, {3}", amount.Name, amount.Number, amount.GetCountry(amount.Number), amount.Amount);
 
         }
     
@@ -100,8 +101,16 @@ namespace Task2
 
                 if (countryid < 0) throw new ArgumentException("Number is negativ.", nameof(countryid));
                 countryid2 = countryid + 100;
-            //Currency = currency;
         }
         
+    }
+    public class Storage : customer
+    {
+        public int Amount { get; private set; } = 10;
+       
+        public Storage(string name, decimal number, decimal countryid, int amount) : base(name, number, countryid)
+        {
+            Amount = amount + 1;
+        }
     }
 }
