@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace Task2
-{   
+{
     public interface IItem
     {
         /// <summary>
@@ -29,12 +31,13 @@ namespace Task2
                 new customer("Firma 5", 1901, 0),
             };
             var amount = new Storage("Firma 6", 50, 1257, 100);
+
             foreach (var b in customer)
             {
                 Console.WriteLine("Auflistung der Kunden: {0}, {1}, {2}, {3}, {4}", b.Name, b.Number,b.GetCountry(b.Number), b.countryid2, b.Description);
             }
             Console.WriteLine("Lager: {0}, {1}, {2}, {3}", amount.Name, amount.Number, amount.GetCountry(amount.Number), amount.Amount);
-
+            Serialization.Run(customer);
         }
     
             private string country;
@@ -55,6 +58,7 @@ namespace Task2
                 Number = number;
                 Name = name;
                 UpdateNumber(countryid);
+            
             }
 
             /// <summary>
@@ -111,6 +115,24 @@ namespace Task2
         public Storage(string name, decimal number, decimal countryid, int amount) : base(name, number, countryid)
         {
             Amount = amount + 1;
+        }
+    }
+    public class Serialization
+    {
+        public static void Run(customer[] items)
+        {
+            var customer = items;
+            var text = JsonConvert.SerializeObject(customer);
+            var desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            var filename = Path.Combine(desktop, "customer.json");
+            File.WriteAllText(filename, text);
+            
+            Console.WriteLine(JsonConvert.SerializeObject(customer));
+
+            var textfromFile = File.ReadAllText(filename);
+            var itemsfromFile = JsonConvert.DeserializeObject<customer[]>(textfromFile);
+            foreach(var x in itemsfromFile)
+            Console.WriteLine($"Name: {x.Description} Country: {x.GetCountry(x.Number)}");
         }
     }
 }
