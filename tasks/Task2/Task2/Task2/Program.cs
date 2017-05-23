@@ -18,10 +18,11 @@ namespace Task2
 
         string GetCountry(decimal number);
     }
-    public class customer
+    public class main
     {
         static void Main(string[] args)
         {
+
             var customer = new[]
             {
                 new customer("Firma 1", 1234, 0),
@@ -29,19 +30,22 @@ namespace Task2
                 new customer("Firma 3", 1257, 0),
                 new customer("Firma 4", 2585, 0),
                 new customer("Firma 5", 1901, 0),
+                new Storage("Firma 12", 1257, 0, 10)
             };
             var amount = new Storage("Firma 6", 50, 1257, 100);
 
             foreach (var b in customer)
             {
-                Console.WriteLine("Auflistung der Kunden: {0}, {1}, {2}, {3}, {4}", b.Name, b.Number,b.GetCountry(b.Number), b.countryid2, b.Description);
+                Console.WriteLine("Auflistung der Kunden: {0}, {1}, {2}, {3}, {4}", b.Name, b.Number, b.GetCountry(b.Number), b.countryid2, b.Description);
             }
             Console.WriteLine("Lager: {0}, {1}, {2}, {3}", amount.Name, amount.Number, amount.GetCountry(amount.Number), amount.Amount);
             Serialization.Run(customer);
         }
-    
+    }
+    public class customer:IItem
+    {    
             private string country;
-            private decimal countryid2;
+           // private decimal countryid2;
 
             /// <summary>
             /// Creates a new book object.
@@ -74,10 +78,13 @@ namespace Task2
             #region IItem 
 
             public string Description => Name;
-            /// <summary>
-            /// Gets the country to the number
-            /// </summary>
-            public string GetCountry(decimal number)
+
+        public object countryid2 { get;  set; }
+
+        /// <summary>
+        /// Gets the country to the number
+        /// </summary>
+        public string GetCountry(decimal number)
             {
 
                 // request : http://stats.cybergreen.net/api/v1/count?limit=20&page=1&asn=1234&format=csv&filename=cg-statistics
