@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
 using Newtonsoft.Json;
 using System.IO;
+
 
 namespace Task2
 {
@@ -39,7 +43,10 @@ namespace Task2
                 Console.WriteLine("Auflistung der Kunden: {0}, {1}, {2}, {3}, {4}", b.Name, b.Number, b.GetCountry(b.Number), b.countryid2, b.Description);
             }
             Console.WriteLine("Lager: {0}, {1}, {2}, {3}", amount.Name, amount.Number, amount.GetCountry(amount.Number), amount.Amount);
-            Serialization.Run(customer);
+           // Serialization.Run(customer);
+            Push.Run(customer);
+            Taskclass.Run(customer);
+
         }
     }
     public class customer:IItem
@@ -142,4 +149,46 @@ namespace Task2
             Console.WriteLine($"Name: {x.Description} Country: {x.GetCountry(x.Number)}");
         }
     }
-}
+    public class Push
+    {
+        public static void Run(customer[] item)
+        {
+            var subject = new Subject<customer>();
+
+            subject
+                .Where(x => x.Number > 10)
+                .Subscribe(x => Console.WriteLine($"Firma name: {x.Name}"))
+                ;
+            subject.Take(1).Subscribe(x => Console.WriteLine($"First countryid: {x.countryid2}"));
+
+            foreach (var tmp in item)
+                subject.OnNext(tmp);
+        }
+    }
+    public class Taskclass
+    {
+        public static void Run(customer[] item)
+        {
+            foreach(var x in item)
+            {
+                var task = Task.Run(() =>
+                {
+                    Console.WriteLine($"Country: {x.GetCountry(x.Number)}");
+                });
+            }
+            Task<int> lentgh = Map(item);
+            Console.ReadLine();
+        }
+        public static async Task<int> Map(customer[] item)
+        {
+            int value = 0;
+            foreach (var x in item)
+            {
+                value = x.Name.Length;
+                await Task.Delay(1000);
+                Console.WriteLine($"Total length of the company's name is: {value}");
+            }
+            return value;
+        }
+    }
+ }
